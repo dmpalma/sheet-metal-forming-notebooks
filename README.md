@@ -1,2 +1,2 @@
-# ipf-notebooks
+# sheet-metal-forming-notebooks
 
