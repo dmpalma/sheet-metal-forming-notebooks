@@ -16,6 +16,12 @@ def eff_stress_Hosford(s1, alpha, r0, r90, a):
     ''' Hosford effective stress in plane stress'''
     return s1*( (r90+r0*alpha**a+r0*r90*(1-alpha)**a)/(r90*(1+r0)) )**(1/a)
 
+def planar_anisotropy(r0, r90, r45=1):
+    return (r0+r90-2*r45)/4
+
+def normal_anisotropy(r0, r90, r45=1):
+    return (r0+r90+2*r45)/4
+
 def plot_ys(sy=300, r0=1.2, r90=1.8, a=8):
     s1 = lambda alpha: sy/eff_stress_Hosford(1, alpha, r0, r90, a)
     a0 = [200*i/1000-100 for i in range(1000)]
@@ -38,9 +44,15 @@ def plot_ys(sy=300, r0=1.2, r90=1.8, a=8):
     ax.plot(xM,yM, 'g-', label=r'Mises')
     ax.plot(xI,yI, 'r--', label=r'Hill')
     ax.plot(xH,yH, 'b:', label=r'Hosford')
+    ax.annotate(r'$\Delta r = %0.3f$' % planar_anisotropy(r0, r90), xy=(500,700))
+    ax.annotate(r'$\overline{r} = %0.3f$' % normal_anisotropy(r0, r90), xy=(500,600))
     ax.axis([-800, 800, -800, 800])
     ax.set_aspect('equal')
     ax.set_xlabel(r'$\sigma_2$')
     ax.set_ylabel(r'$\sigma_1$')
     plt.legend(title='Yield surface', loc='lower right')
     plt.show()
+
+if __name__ == "__main__":
+    plot_ys()
+    
