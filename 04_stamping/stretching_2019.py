@@ -117,7 +117,7 @@ def plot_stretching(R, TL, CL, mu, t0, K, n, angle):
     ax2p.set_ylim(0, t0)
     ax2p.set_ylabel(r'Sheet thickness, $t$ (mm)', color='c')
     label = ['O', 'A', 'B']
-    [ax2p.annotate(xy=[i, 0.01], s=j) for i, j in zip(x, label)]
+    [ax2p.annotate(xy=[i, 0.01], text=j) for i, j in zip(x, label)]
     
     # Tension and pressure
     x = (0, sOA, sOA, sOA+sAB, sOA+sAB)
