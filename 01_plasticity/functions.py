@@ -7,7 +7,14 @@ Author: Domingo Morales Palma <dmpalma@us.es>
 
 import math
 import numpy as np
+import numpy.linalg as linalg
 import matplotlib.pyplot as plt
+
+def sij2array(sx, sy, sz, sxy, sxz, syz):
+    a = np.array([[sx, sxy, sxz],
+                 [sxy, sy, syz],
+                 [sxy, syz, sz]])
+    return a
 
 def I1(sx, sy, sz, sxy, sxz, syz):
     return sx + sy + sz
@@ -25,11 +32,20 @@ def calculate_invariants(sx, sy, sz, sxy, sxz, syz):
     return (i1, i2, i3)
 
 def principal_stresses(sx, sy, sz, sxy, sxz, syz):
+    # method 1: computing the eigenvalues
+    #a = sij2array(sx, sy, sz, sxy, sxz, syz)
+    #ps = linalg.eigvals(a)
+    # method 2: using the invariants to compute the cubic equation 
     i1, i2, i3 = calculate_invariants(sx, sy, sz, sxy, sxz, syz)
-    return np.roots((1, -i1, -i2, -i3))
+    ps = np.roots((1, -i1, -i2, -i3))
+    return ps
+    
+
+
 
 def print_tensor(sx, sy, sz, sxy=0, sxz=0, syz=0):
-    print(np.array([[sx, sxy, sxz], [sxy, sy, syz], [sxz, syz, sz]]))
+    a = sij2array(sx, sy, sz, sxy, sxz, syz)
+    print(a)
 
 def plot_Mhor_circles(s1, s2, s3, sx=0, sy=0, sxy=0):
     fig, ax = plt.subplots()
@@ -117,8 +133,8 @@ def plot_tresca_mises(Y, px, py):
     ax.axvline(x=0, color='k', linewidth=0.2)
     ax.axhline(y=0, color='k', linewidth=0.2)
     
-    ax.plot(*zip(*tresca), 'g-', label=r'Tresca ($\sigma_y=%s$ MPa)' % Y)    
-    ax.plot(x0,y0, 'b-', label=r'Mises ($\sigma_y=%s$ MPa)' % Y)
+    ax.plot(*zip(*tresca), 'g-', label=r'Tresca')
+    ax.plot(x0,y0, 'b-', label=r'Mises')
     ax.plot(x1,y1, 'b-')
     ax.plot([0, py], [0, px], color='r', label=r'Stress path ($\alpha=\sigma_2/\sigma_1$)')
     
@@ -127,7 +143,15 @@ def plot_tresca_mises(Y, px, py):
     ax.annotate(r'(%0.1f, %0.1f) MPa' % (py,px), [py,px+20])
     ax.annotate(r'$\alpha=%0.3f$' % alpha, [py/2,px/2])
     ax.set_aspect('equal', adjustable='datalim')
-    plt.legend()
+    plt.legend(title=r'$Y=%s$ MPa' % Y)
     plt.show()
 
+if __name__ == "__main__":
+    sx, sy, sz, sxy, sxz, syz = 0, 180, 75, 134, 0, 0
+    print_tensor(sx, sy, sz, sxy, sxz, syz)
+    w, v = eigen(sx, sy, sz, sxy, sxz, syz)
+    print('E-value:', w)
+    print('E-vector:\n', v)
+    s1, s2, s3 = principal_stresses(sx, sy, sz, sxy, sxz, syz)
+    print(s1, s2, s3)
 
