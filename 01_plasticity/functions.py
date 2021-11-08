@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 def sij2array(sx, sy, sz, sxy, sxz, syz):
     a = np.array([[sx, sxy, sxz],
                  [sxy, sy, syz],
-                 [sxy, syz, sz]])
+                 [sxz, syz, sz]])
     return a
 
 def I1(sx, sy, sz, sxy, sxz, syz):
