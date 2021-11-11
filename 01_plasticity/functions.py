@@ -146,6 +146,36 @@ def plot_tresca_mises(Y, px, py):
     plt.legend(title=r'$Y=%s$ MPa' % Y)
     plt.show()
 
+def plot_tresca_mises_k(k, px, py):
+    Y = math.sqrt(3)*k
+    alpha = py/px
+    
+    tresca = ((2*k, 0), (2*k, 2*k), (0, 2*k), (-2*k, 0), (-2*k, -2*k), (0, -2*k), (2*k, 0))
+    
+    a = [200*i/1000-100 for i in range(1000)]
+    y0 = [Y/(math.sqrt(1-i+i**2)) for i in a]
+    x0 = [j*i for i,j in zip(y0,a)]
+    y1 = [-Y/(math.sqrt(1-i+i**2)) for i in a]
+    x1 = [j*i for i,j in zip(y1,a)]
+    
+    fig, ax = plt.subplots()
+    ax.axvline(x=0, color='k', linewidth=0.2)
+    ax.axhline(y=0, color='k', linewidth=0.2)
+    
+    ax.plot(*zip(*tresca), 'g-', label=r'Tresca')
+    ax.plot(x0,y0, 'b-', label=r'Mises')
+    ax.plot(x1,y1, 'b-')
+    ax.plot([0, py], [0, px], color='r', label=r'Stress path ($\alpha=\sigma_\theta/\sigma_z$)')
+    
+    ax.set_xlabel(r'$\sigma_z$')
+    ax.set_ylabel(r'$\sigma_\theta$')
+    ax.annotate(r'(%0.1f, %0.1f) MPa' % (py,px), [py,px+20])
+    ax.annotate(r'$\alpha=%0.3f$' % alpha, [py/2,px/2])
+    ax.set_aspect('equal', adjustable='datalim')
+    plt.legend(title=r'$k=%s$ MPa' % k, loc='upper left')
+    plt.show()
+
+
 if __name__ == "__main__":
     sx, sy, sz, sxy, sxz, syz = 0, 180, 75, 134, 0, 0
     print_tensor(sx, sy, sz, sxy, sxz, syz)
@@ -154,4 +184,6 @@ if __name__ == "__main__":
     print('E-vector:\n', v)
     s1, s2, s3 = principal_stresses(sx, sy, sz, sxy, sxz, syz)
     print(s1, s2, s3)
+
+    plot_tresca_mises_k(500, 1000, 500)
 
